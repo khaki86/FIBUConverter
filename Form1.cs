@@ -212,6 +212,8 @@ namespace WindowsFormsApplication1
                 sum_sw.Close();
                 sum_sr.Close();
                 File.Delete("tmp_sorting_FIBUConverter.txt");
+                execute_btn.Enabled = false;
+                execute_btn.Text = "Ende";
             }
         }
 
