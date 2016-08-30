@@ -13,6 +13,8 @@ namespace WindowsFormsApplication1
     {
         private string user_defined_date = "";
         private string outfile_name = "";
+        string name_prefix;
+        string konto_tausch;
         public Form1()
         {
             InitializeComponent();
@@ -50,7 +52,7 @@ namespace WindowsFormsApplication1
             public string frage2 { get; set; }
             public string SollKonto { get; set; }
             public string HabenKonto { get; set; }
-            public string frage3 { get; set; }
+            public string SummeHaben { get; set; }
             public string frage4 { get; set; }
             public string frage5 { get; set; }
             public string frage6 { get; set; }
@@ -63,7 +65,9 @@ namespace WindowsFormsApplication1
             StreamReader sr = new StreamReader(infile_text.Text, System.Text.Encoding.Default);
             string[] row;
             string line1;
-            using (StreamWriter sw = new StreamWriter("tmp_sorting_FIBUConverter.txt"))
+            int xy = 0;
+
+            using (StreamWriter sw = new StreamWriter("tmp_sorting_FIBUConverter.txt", false, Encoding.UTF8))
             {
                 while (sr.Peek() > -1)
                 {
@@ -78,7 +82,8 @@ namespace WindowsFormsApplication1
                     tmp.frage2 = row[5];
                     tmp.SollKonto = row[6];             //soll haben 
                     tmp.HabenKonto = row[7];            //soll haben identisch
-                    tmp.frage3 = row[8];
+                    tmp.SummeHaben = row[8];
+                    row[8] = "0.00";
                     tmp.frage4 = row[9];
                     tmp.frage5 = row[10];
                     tmp.frage6 = row[11];
@@ -88,6 +93,7 @@ namespace WindowsFormsApplication1
                     {
                         row[i] = row[i].Replace("\"", "");
                     }
+
                     row[1] = row[1].Replace(",", ".");
                     sw.Write(';');
                     sw.Write(';');
@@ -100,14 +106,12 @@ namespace WindowsFormsApplication1
                     sw.Write(';');
                     sw.Write(row[7]);
                     sw.Write(';');
+                    if (row[0] == "Sachbezüge 1" || row[0] == "Sachbezüge 2") { row[2] = row[3]; row[3] = ""; }
                     sw.Write(row[2]);
                     sw.Write(';');
                     sw.Write(row[1]);
                     sw.Write(';');
-                    sw.Write('0');
-                    sw.Write('.');
-                    sw.Write('0');
-                    sw.Write('0');
+                    sw.Write(row[8]);
                     sw.Write(';');
                     sw.Write('E');
                     sw.Write('U');
@@ -120,6 +124,7 @@ namespace WindowsFormsApplication1
                     sw.Write(row[4]);
                     sw.Write('\r');
                     sw.Write('\n');
+                    Console.Write(row[0] + "\n");
                 }
             }
             string lines = "tmp_sorting_FIBUConverter.txt";
@@ -135,7 +140,7 @@ namespace WindowsFormsApplication1
     }
         void sum_rows()
         {
-            StreamReader sum_sr = new StreamReader("tmp_sorting_FIBUConverter.txt", System.Text.Encoding.Default);
+            StreamReader sum_sr = new StreamReader("tmp_sorting_FIBUConverter.txt", System.Text.Encoding.UTF8);
             string[] sum_row;
             string[] last_row = new string[15];
             last_row[0] = "init_string";
@@ -145,8 +150,12 @@ namespace WindowsFormsApplication1
             dateTimePicker1.CustomFormat = "MM-yyyy";
             outfile_name = dateTimePicker1.Text;
             dateTimePicker1.Format = DateTimePickerFormat.Short;
-            using (StreamWriter sum_sw = new StreamWriter("C-"+outfile_name +".txt", false, Encoding.Default))
+            if (comboBox_mandant.Text == "PanStreet") { name_prefix = "I"; }
+            if (comboBox_mandant.Text == "Consult") { name_prefix = "C"; }
+            if (comboBox_mandant.Text == "Enseidon") { name_prefix = "E"; }
+            using (StreamWriter sum_sw = new StreamWriter(name_prefix + "-" + outfile_name + ".txt", false, System.Text.Encoding.Default))
             {
+                sum_sw.WriteLine("JournalNr;BelegNr;Buchungsdatum;ErsterBuchungstext;Sollkonto;Habenkonto;Kostenstelle;SummeSoll;SummeHaben;Waehrung;Steuerart;Steuercode;MandantenControlling;Lohnart;Kostentraeger");
                 while (sum_sr.Peek() > -1)
                 {
                     SortArray sum_tmp = new SortArray();
@@ -159,9 +168,19 @@ namespace WindowsFormsApplication1
                             last_row[i] = sum_row[i];
                         }
                     }
-
                     if (sum_row[3] != last_row[3] || sum_row[4] != last_row[4] || sum_row[5] != last_row[5] || sum_row[6] != last_row[6] || sum_row[14] != last_row[14])
                     {
+                        Console.Write(last_row[3] +"\n");
+                        if (last_row[3] == "Sachbezüge 1" || last_row[3] == "Sachbezüge 2")
+                        {
+                            Console.WriteLine("HIER!!!!");
+                            konto_tausch = last_row[5];
+                            last_row[5] = last_row[4];
+                            last_row[4] = konto_tausch;
+                            last_row[8] = last_row[7];
+                            last_row[7] = "0.00";
+                        }
+
                         for (int i = 0; i <= 6; i++)
                         {
                             sum_sw.Write(last_row[i]);
@@ -212,8 +231,8 @@ namespace WindowsFormsApplication1
                 sum_sw.Close();
                 sum_sr.Close();
                 File.Delete("tmp_sorting_FIBUConverter.txt");
-                execute_btn.Enabled = false;
                 execute_btn.Text = "Ende";
+                execute_btn.Enabled = false;
             }
         }
 
@@ -262,6 +281,11 @@ namespace WindowsFormsApplication1
 
         }
         private void infile_text_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }

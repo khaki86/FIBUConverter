@@ -39,6 +39,8 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.comboBox_mandant = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -109,6 +111,7 @@
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.checkBox1.Enabled = false;
             this.checkBox1.Location = new System.Drawing.Point(196, 147);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(75, 17);
@@ -137,11 +140,36 @@
             this.dateTimePicker1.Value = new System.DateTime(2016, 8, 23, 14, 58, 5, 0);
             this.dateTimePicker1.ValueChanged += new System.EventHandler(this.dateTimePicker1_ValueChanged);
             // 
+            // comboBox_mandant
+            // 
+            this.comboBox_mandant.FormattingEnabled = true;
+            this.comboBox_mandant.Items.AddRange(new object[] {
+            "Consult",
+            "PanStreet",
+            "Enseidon"});
+            this.comboBox_mandant.Location = new System.Drawing.Point(196, 31);
+            this.comboBox_mandant.Name = "comboBox_mandant";
+            this.comboBox_mandant.Size = new System.Drawing.Size(74, 21);
+            this.comboBox_mandant.TabIndex = 7;
+            this.comboBox_mandant.ValueMember = "Consult";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(196, 15);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(49, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Mandant";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 171);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.comboBox_mandant);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.checkBox1);
@@ -170,6 +198,8 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.ComboBox comboBox_mandant;
+        private System.Windows.Forms.Label label2;
     }
 }
 
